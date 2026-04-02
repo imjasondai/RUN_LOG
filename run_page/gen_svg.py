@@ -261,7 +261,7 @@ def main():
     elif args.type == "github":
         # Draw the full poster first
         p.draw(drawers[args.type], args.output)
-        
+
         # Draw annual posters
         years = p.years.all()[:]
         for y in years:
