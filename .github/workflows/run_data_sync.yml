@@ -1,7 +1,20 @@
 name: Run Data Sync
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
+    inputs:
+      strava_client_id:
+        description: Strava client id override for manual runs
+        required: false
+        type: string
+      strava_client_secret:
+        description: Strava client secret override for manual runs
+        required: false
+        type: string
+      strava_refresh_token:
+        description: Strava refresh token override for manual runs
+        required: false
+        type: string
   schedule:
     - cron: '0 0 * * *'
   push:
@@ -111,9 +124,9 @@ jobs:
       - name: Run sync Strava script
         if: env.RUN_TYPE == 'strava'
         env:
-          STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
-          STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
-          STRAVA_CLIENT_REFRESH_TOKEN: ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
+          STRAVA_CLIENT_ID: ${{ github.event.inputs.strava_client_id || secrets.STRAVA_CLIENT_ID || vars.STRAVA_CLIENT_ID }}
+          STRAVA_CLIENT_SECRET: ${{ github.event.inputs.strava_client_secret || secrets.STRAVA_CLIENT_SECRET || vars.STRAVA_CLIENT_SECRET }}
+          STRAVA_CLIENT_REFRESH_TOKEN: ${{ github.event.inputs.strava_refresh_token || secrets.STRAVA_CLIENT_REFRESH_TOKEN || vars.STRAVA_CLIENT_REFRESH_TOKEN }}
         run: |
           test -n "$STRAVA_CLIENT_ID"
           test -n "$STRAVA_CLIENT_SECRET"
