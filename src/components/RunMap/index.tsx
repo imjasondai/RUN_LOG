@@ -1,4 +1,5 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
+import maplibregl from 'maplibre-gl';
 import React, { useRef, useCallback, useState } from 'react';
 import Map, {
   Layer,
@@ -83,8 +84,10 @@ const RunMap = ({
   const rafIdRef = useRef<number | null>(null);
   const lights = !PRIVACY_MODE;
   const vendorStyles =
-    (MAP_TILE_STYLES as Record<string, Record<string, string>>)[MAP_TILE_VENDOR] ||
-    MAP_TILE_STYLES.mapcn_openfreemap;
+    ((MAP_TILE_STYLES as unknown as Record<string, Record<string, string>>)[
+      MAP_TILE_VENDOR
+    ] as Record<string, string> | undefined) || MAP_TILE_STYLES.mapcn_openfreemap;
+  const isMapboxStyle = String(MAP_TILE_VENDOR) === 'mapbox';
   const selectedStyle =
     vendorStyles[MAP_TILE_STYLE_DARK] || MAP_TILE_STYLES.mapcn_openfreemap['dark-matter'];
   const FALLBACK_STYLE = selectedStyle.includes('?key=')
@@ -108,7 +111,7 @@ const RunMap = ({
     (ref: MapRef) => {
       if (ref !== null) {
         const map = ref.getMap();
-        if (map && IS_CHINESE) {
+        if (map && IS_CHINESE && isMapboxStyle) {
           map.addControl(new MapboxLanguage({ defaultLanguage: 'zh-Hans' }));
         }
         map.on('style.load', () => {
@@ -143,7 +146,7 @@ const RunMap = ({
         switchLayerVisibility(map, lights);
       }
     },
-    [mapRef, lights]
+    [isMapboxStyle, mapRef, lights]
   );
   React.useEffect(() => {
     if (!MAPBOX_TOKEN) return;
@@ -364,9 +367,10 @@ const RunMap = ({
         {...internalViewState}
         onMove={onMove}
         style={style}
+        mapLib={isMapboxStyle ? undefined : (maplibregl as any)}
         mapStyle={mapStyleUrl}
         ref={mapRefCallback}
-        mapboxAccessToken={MAPBOX_TOKEN}
+        mapboxAccessToken={isMapboxStyle ? MAPBOX_TOKEN : undefined}
       >
         <Source id="data" type="geojson" data={geoData}>
           <Layer

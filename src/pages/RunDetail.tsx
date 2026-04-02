@@ -1,11 +1,12 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import RunPolyline from '@/components/RunPolyline';
+import RunMap from '@/components/RunMap';
 import RunDetailPanel from '@/components/RunDetailPanel';
 import useActivities from '@/hooks/useActivities';
 import NotFound from '@/pages/404';
-import { isRun } from '@/utils/utils';
+import { geoJsonForRuns, getBoundsForGeoData, isRun, IViewState } from '@/utils/utils';
 
 const RunDetail = () => {
   const { runId } = useParams();
@@ -28,6 +29,17 @@ const RunDetail = () => {
     return monthDistance / 1000;
   }, [activities, run]);
 
+  const geoData = useMemo(() => geoJsonForRuns(run ? [run] : []), [run]);
+  const [viewState, setViewState] = useState<IViewState>(
+    run ? getBoundsForGeoData(geoData) : {}
+  );
+
+  useEffect(() => {
+    if (run) {
+      setViewState(getBoundsForGeoData(geoData));
+    }
+  }, [geoData, run]);
+
   if (!runId || Number.isNaN(runIdNumber) || !run) {
     return <NotFound />;
   }
@@ -39,8 +51,17 @@ const RunDetail = () => {
   return (
     <Layout>
       <div className="max-w-[480px] mx-auto">
-        <div className="flex justify-center items-center ">
-          <RunPolyline run={run} className="w-[260px] h-[260px]" />
+        <div className="rounded-card overflow-hidden border border-gray-800/50 min-h-[320px] h-[360px] mb-6">
+          <RunMap
+            viewState={viewState}
+            geoData={geoData}
+            setViewState={setViewState}
+            changeYear={() => {}}
+            thisYear={run.start_date_local.slice(0, 4)}
+          />
+        </div>
+        <div className="flex justify-center items-center mb-6">
+          <RunPolyline run={run} className="w-[220px] h-[220px]" />
         </div>
         <RunDetailPanel run={run} monthlyDistanceKm={monthlyDistanceKm} />
       </div>
