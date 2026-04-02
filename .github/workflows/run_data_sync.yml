@@ -110,8 +110,15 @@ jobs:
 
       - name: Run sync Strava script
         if: env.RUN_TYPE == 'strava'
+        env:
+          STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
+          STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
+          STRAVA_CLIENT_REFRESH_TOKEN: ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }}
         run: |
-          python run_page/strava_sync.py ${{ secrets.STRAVA_CLIENT_ID }} ${{ secrets.STRAVA_CLIENT_SECRET }} ${{ secrets.STRAVA_CLIENT_REFRESH_TOKEN }} --only-run
+          test -n "$STRAVA_CLIENT_ID"
+          test -n "$STRAVA_CLIENT_SECRET"
+          test -n "$STRAVA_CLIENT_REFRESH_TOKEN"
+          python run_page/strava_sync.py "$STRAVA_CLIENT_ID" "$STRAVA_CLIENT_SECRET" "$STRAVA_CLIENT_REFRESH_TOKEN" --only-run
         # If you only want to sync `type running` add args --only-run, default script is to sync all data (rides and runs).
 
       - name: Run sync Codoon script
