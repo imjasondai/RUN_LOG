@@ -10,10 +10,10 @@ interface ISiteMetadataResult {
 }
 
 const data: ISiteMetadataResult = {
-  siteTitle: 'Run Colin, Run!',
-  siteUrl: 'https://imcolin.fan',
-  logo: 'https://imcolin.fan/a.jpg',
-  description: '',
+  siteTitle: 'Jason Dai Running',
+  siteUrl: 'https://imjasondai.github.io/RUN_LOG',
+  logo: 'https://github.com/imjasondai.png',
+  description: 'Running log powered by Strava.',
   navLinks: [
     {
       name: 'Running',
@@ -25,7 +25,7 @@ const data: ISiteMetadataResult = {
     },
     {
       name: 'About',
-      url: 'https://imcolin.fan',
+      url: 'https://github.com/imjasondai',
     },
   ],
 };
