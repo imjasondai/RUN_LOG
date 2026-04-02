@@ -16,6 +16,10 @@ import {
   ROAD_LABEL_DISPLAY,
   MAIN_COLOR,
   MAPBOX_TOKEN,
+  MAP_TILE_ACCESS_TOKEN,
+  MAP_TILE_STYLES,
+  MAP_TILE_STYLE_DARK,
+  MAP_TILE_VENDOR,
   PROVINCE_FILL_COLOR,
   USE_DASH_LINE,
   LINE_OPACITY,
@@ -78,9 +82,14 @@ const RunMap = ({
   const isAnimatingRef = useRef(false);
   const rafIdRef = useRef<number | null>(null);
   const lights = !PRIVACY_MODE;
-  // Fallback style when Mapbox token is missing or unauthorized in dev
-  const FALLBACK_STYLE =
-    'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
+  const vendorStyles =
+    (MAP_TILE_STYLES as Record<string, Record<string, string>>)[MAP_TILE_VENDOR] ||
+    MAP_TILE_STYLES.mapcn_openfreemap;
+  const selectedStyle =
+    vendorStyles[MAP_TILE_STYLE_DARK] || MAP_TILE_STYLES.mapcn_openfreemap['dark-matter'];
+  const FALLBACK_STYLE = selectedStyle.includes('?key=')
+    ? `${selectedStyle}${MAP_TILE_ACCESS_TOKEN}`
+    : selectedStyle;
   const [mapStyleUrl, setMapStyleUrl] = useState<string>(
     MAPBOX_TOKEN ? 'mapbox://styles/mapbox/dark-v10' : FALLBACK_STYLE
   );
