@@ -283,7 +283,7 @@ const RunMap = ({
           style={{ opacity: 0.3 }}
         />
       </Map>
-      <div className="absolute bottom-2 right-16 z-10">
+      <div className="absolute bottom-28 right-2 z-10">
         <div
           className={`rounded-full border border-white/20 bg-white/90 text-black shadow-lg backdrop-blur-sm transition-all ${
             isAttributionOpen ? 'rounded-2xl px-3 py-1.5' : 'h-6 w-6'
