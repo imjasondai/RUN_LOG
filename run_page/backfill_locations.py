@@ -15,7 +15,7 @@ class Point:
         self.lon = lon
 
 
-def backfill_locations(delay_seconds=1.0):
+def backfill_locations(delay_seconds=0.3):
     session = init_db(SQL_FILE)
     missing = (
         session.query(Activity)
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--delay-seconds",
         type=float,
-        default=1.0,
+        default=0.3,
         help="delay between reverse geocoding requests",
     )
     options = parser.parse_args()

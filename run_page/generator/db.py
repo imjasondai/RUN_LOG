@@ -27,6 +27,7 @@ def randomword():
 
 
 options.default_user_agent = "running_page"
+options.default_timeout = 8
 # reverse the location (lat, lon) -> location detail
 g = Nominatim(user_agent=randomword())
 ENABLE_REVERSE_GEOCODE = os.getenv("ENABLE_REVERSE_GEOCODE", "false").lower() in (
@@ -52,7 +53,9 @@ def reverse_geocode_location(start_point):
     try:
         return str(
             g.reverse(
-                f"{start_point.lat}, {start_point.lon}", language="zh-CN"  # type: ignore
+                f"{start_point.lat}, {start_point.lon}",
+                language="zh-CN",
+                timeout=8,  # type: ignore
             )
         )
     except Exception:
@@ -61,6 +64,7 @@ def reverse_geocode_location(start_point):
                 g.reverse(
                     f"{start_point.lat}, {start_point.lon}",
                     language="zh-CN",  # type: ignore
+                    timeout=8,
                 )
             )
         except Exception:
