@@ -670,6 +670,45 @@ a.mapboxgl-ctrl-logo.mapboxgl-compact {
 .maplibregl-ctrl-attrib.maplibregl-compact-show .maplibregl-ctrl-attrib-inner {
   display: block;
 }
+
+.mapboxgl-ctrl-attrib,
+.maplibregl-ctrl-attrib {
+  min-height: 24px;
+  padding: 2px 24px 2px 0 !important;
+  margin: 10px !important;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border-radius: 12px;
+}
+
+.mapboxgl-ctrl-attrib .mapboxgl-ctrl-attrib-inner,
+.maplibregl-ctrl-attrib .maplibregl-ctrl-attrib-inner {
+  display: none !important;
+}
+
+.mapboxgl-ctrl-attrib-button,
+.maplibregl-ctrl-attrib-button {
+  display: block !important;
+}
+
+.mapboxgl-ctrl-attrib:hover,
+.mapboxgl-ctrl-attrib:focus-within,
+.mapboxgl-ctrl-attrib.mapboxgl-compact-show,
+.maplibregl-ctrl-attrib:hover,
+.maplibregl-ctrl-attrib:focus-within,
+.maplibregl-ctrl-attrib.maplibregl-compact-show {
+  padding: 2px 28px 2px 8px !important;
+}
+
+.mapboxgl-ctrl-attrib:hover .mapboxgl-ctrl-attrib-inner,
+.mapboxgl-ctrl-attrib:focus-within .mapboxgl-ctrl-attrib-inner,
+.mapboxgl-ctrl-attrib.mapboxgl-compact-show .mapboxgl-ctrl-attrib-inner,
+.maplibregl-ctrl-attrib:hover .maplibregl-ctrl-attrib-inner,
+.maplibregl-ctrl-attrib:focus-within .maplibregl-ctrl-attrib-inner,
+.maplibregl-ctrl-attrib.maplibregl-compact-show .maplibregl-ctrl-attrib-inner {
+  display: block !important;
+}
+
 .mapboxgl-scroll-zoom-blocker,
 .mapboxgl-touch-pan-blocker {
   color: #fff;

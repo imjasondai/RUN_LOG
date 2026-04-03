@@ -57,6 +57,7 @@ const RunDetail = () => {
             setViewState={setViewState}
             changeYear={() => {}}
             thisYear={run.start_date_local.slice(0, 4)}
+            showActivityOverlay={false}
           />
         </div>
         <RunDetailPanel run={run} monthlyDistanceKm={monthlyDistanceKm} />
