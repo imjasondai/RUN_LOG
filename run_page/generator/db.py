@@ -1,7 +1,7 @@
 import datetime
+import os
 import random
 import string
-import os
 
 from geopy.geocoders import options, Nominatim
 from sqlalchemy import (
@@ -34,6 +34,35 @@ ENABLE_REVERSE_GEOCODE = os.getenv("ENABLE_REVERSE_GEOCODE", "false").lower() in
     "true",
     "yes",
 )
+
+
+def build_location_text(run_activity):
+    city = getattr(run_activity, "location_city", None)
+    state = getattr(run_activity, "location_state", None)
+    country = getattr(run_activity, "location_country", None)
+    parts = [part.strip() for part in [city, state, country] if part and str(part).strip()]
+    return ", ".join(dict.fromkeys(parts))
+
+
+def reverse_geocode_location(start_point):
+    if not start_point:
+        return ""
+    try:
+        return str(
+            g.reverse(
+                f"{start_point.lat}, {start_point.lon}", language="zh-CN"  # type: ignore
+            )
+        )
+    except Exception:
+        try:
+            return str(
+                g.reverse(
+                    f"{start_point.lat}, {start_point.lon}",
+                    language="zh-CN",  # type: ignore
+                )
+            )
+        except Exception:
+            return ""
 
 
 ACTIVITY_KEYS = [
@@ -110,28 +139,12 @@ def update_or_create_activity(session, run_activity):
 
         if not activity:
             start_point = run_activity.start_latlng
-            location_country = getattr(run_activity, "location_country", "")
+            location_country = build_location_text(run_activity)
             # or China for #176 to fix
             if ENABLE_REVERSE_GEOCODE and (
                 (not location_country and start_point) or location_country == "China"
             ):
-                try:
-                    location_country = str(
-                        g.reverse(
-                            f"{start_point.lat}, {start_point.lon}", language="zh-CN"  # type: ignore
-                        )
-                    )
-                # limit (only for the first time)
-                except Exception:
-                    try:
-                        location_country = str(
-                            g.reverse(
-                                f"{start_point.lat}, {start_point.lon}",
-                                language="zh-CN",  # type: ignore
-                            )
-                        )
-                    except Exception:
-                        pass
+                location_country = reverse_geocode_location(start_point)
 
             activity = Activity(
                 run_id=run_activity.id,
@@ -154,6 +167,15 @@ def update_or_create_activity(session, run_activity):
             session.add(activity)
             created = True
         else:
+            if not activity.location_country:
+                start_point = getattr(run_activity, "start_latlng", None)
+                location_country = build_location_text(run_activity)
+                if ENABLE_REVERSE_GEOCODE and (
+                    (not location_country and start_point) or location_country == "China"
+                ):
+                    location_country = reverse_geocode_location(start_point)
+                if location_country:
+                    activity.location_country = location_country
             activity.name = run_activity.name
             activity.distance = float(run_activity.distance)
             activity.moving_time = run_activity.moving_time
