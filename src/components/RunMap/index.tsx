@@ -1,6 +1,7 @@
 import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import maplibregl from 'maplibre-gl';
 import React, { useRef, useCallback, useState } from 'react';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import Map, {
   Layer,
   Source,
