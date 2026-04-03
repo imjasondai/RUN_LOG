@@ -42,18 +42,20 @@ const Index = () => {
     return new Date().getMonth() + 1;
   })();
   const initialYear = latestRunWithPolyline?.start_date_local?.slice(0, 4) ?? thisYear;
+  const initialRuns = filterAndSortRuns(
+    activities,
+    `${initialYear}-${pad2(initialMonth)}`,
+    filterYearMonthRuns,
+    sortDateFunc
+  );
+  const initialGeoData = geoJsonForRuns(
+    latestRunWithPolyline ? [latestRunWithPolyline] : initialRuns
+  );
   const [year, setYear] = useState(initialYear);
   const [month, setMonth] = useState<number>(initialMonth);
-  const [runs, setActivity] = useState(
-    filterAndSortRuns(
-      activities,
-      `${initialYear}-${pad2(initialMonth)}`,
-      filterYearMonthRuns,
-      sortDateFunc
-    )
-  );
+  const [runs, setActivity] = useState(initialRuns);
   const [title, setTitle] = useState('');
-  const [geoData, setGeoData] = useState(geoJsonForRuns(runs));
+  const [geoData, setGeoData] = useState(initialGeoData);
   const getMapViewState = (nextGeoData: typeof geoData): IViewState => {
     const hasTrack = nextGeoData.features.some(
       (feature) => feature.geometry.coordinates.length > 0
@@ -68,10 +70,11 @@ const Index = () => {
     latestRunWithPolyline?.start_date_local?.slice(0, 10) ?? ''
   );
   const runsByDate = useMemo(() => groupRunsByDate(runs), [runs]);
-  const pendingRunIdRef = useRef<number | null>(latestRunWithPolyline?.run_id ?? null);
+  const pendingRunIdRef = useRef<number | null>(null);
+  const didInitMapRef = useRef(false);
 
   const [viewState, setViewState] = useState<IViewState>({
-    ...getMapViewState(geoData),
+    ...getMapViewState(initialGeoData),
   });
 
   const changeYearMonth = (y: string, m: number) => {
@@ -120,6 +123,10 @@ const Index = () => {
   };
 
   useEffect(() => {
+    if (!didInitMapRef.current) {
+      didInitMapRef.current = true;
+      return;
+    }
     const fullGeo = geoJsonForRuns(runs);
     if (pendingRunIdRef.current) {
       const targetRun = runs.find((r) => r.run_id === pendingRunIdRef.current);
@@ -159,10 +166,10 @@ const Index = () => {
           <DashboardStats onClickPB={handleClickPB} />
         </div>
 
-        <div className="lg:col-span-6 flex flex-col">
+        <div className="lg:col-span-6 lg:h-[600px]">
           <div
             id="run-map"
-            className="bg-card rounded-card shadow-lg border border-gray-800/50 overflow-hidden relative w-full h-[400px] lg:h-[600px]"
+            className="bg-card rounded-card shadow-lg border border-gray-800/50 overflow-hidden relative w-full h-[400px] lg:h-full"
           >
             <RunMap
               viewState={viewState}
@@ -174,8 +181,8 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-4 flex flex-col gap-6 overflow-x-hidden lg:h-[600px]">
-          <div className="flex-1 min-h-0">
+        <div className="lg:col-span-4 grid gap-6 overflow-x-hidden lg:h-[600px] lg:grid-rows-[1fr_180px]">
+          <div className="min-h-0">
             <CompactRunCalendar
               year={year}
               month={month}
@@ -187,7 +194,7 @@ const Index = () => {
             />
           </div>
 
-          <div className="h-[180px] shrink-0">
+          <div className="h-[180px]">
             <MonthlyBarChart
               runs={filterAndSortRuns(
                 activities,
