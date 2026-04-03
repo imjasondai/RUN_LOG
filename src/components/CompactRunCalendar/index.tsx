@@ -434,7 +434,7 @@ const CompactRunCalendar = ({
   };
 
   return (
-    <div className="bg-card rounded-card shadow-lg border border-gray-800/50 p-3">
+    <div className="bg-card rounded-card shadow-lg border border-gray-800/50 p-3 h-full flex flex-col">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-1">
           <button
@@ -502,7 +502,7 @@ const CompactRunCalendar = ({
 
       <div
         key={animKey}
-        className="grid grid-cols-7 gap-1 animate-[fadeIn_0.3s_ease-out]"
+        className="grid grid-cols-7 gap-1 animate-[fadeIn_0.3s_ease-out] flex-1"
       >
         {cells.map((c, i) => {
           if (!c.inMonth) {

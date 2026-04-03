@@ -28,24 +28,26 @@ const SHENZHEN_VIEW_STATE: IViewState = {
 
 const Index = () => {
   const { activities, thisYear, years } = useActivities();
+  const latestRunWithPolyline = useMemo(() => {
+    return [...activities]
+      .filter((activity) => activity.type === 'Run' && !!activity.summary_polyline)
+      .sort(sortDateFunc)[0];
+  }, [activities]);
   const initialMonth = (() => {
-    const thisYearRuns = filterAndSortRuns(
-      activities,
-      thisYear,
-      filterYearRuns,
-      sortDateFunc
-    );
-    const m = thisYearRuns[0]?.start_date_local?.slice(5, 7);
+    const m =
+      latestRunWithPolyline?.start_date_local?.slice(5, 7) ??
+      filterAndSortRuns(activities, thisYear, filterYearRuns, sortDateFunc)[0]?.start_date_local?.slice(5, 7);
     const parsed = m ? Number(m) : NaN;
     if (parsed >= 1 && parsed <= 12) return parsed;
     return new Date().getMonth() + 1;
   })();
-  const [year, setYear] = useState(thisYear);
+  const initialYear = latestRunWithPolyline?.start_date_local?.slice(0, 4) ?? thisYear;
+  const [year, setYear] = useState(initialYear);
   const [month, setMonth] = useState<number>(initialMonth);
   const [runs, setActivity] = useState(
     filterAndSortRuns(
       activities,
-      `${thisYear}-${pad2(initialMonth)}`,
+      `${initialYear}-${pad2(initialMonth)}`,
       filterYearMonthRuns,
       sortDateFunc
     )
@@ -62,9 +64,11 @@ const Index = () => {
     return getBoundsForGeoData(nextGeoData);
   };
   const [intervalId, setIntervalId] = useState<number>();
-  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [selectedDate, setSelectedDate] = useState<string>(
+    latestRunWithPolyline?.start_date_local?.slice(0, 10) ?? ''
+  );
   const runsByDate = useMemo(() => groupRunsByDate(runs), [runs]);
-  const pendingRunIdRef = useRef<number | null>(null);
+  const pendingRunIdRef = useRef<number | null>(latestRunWithPolyline?.run_id ?? null);
 
   const [viewState, setViewState] = useState<IViewState>({
     ...getMapViewState(geoData),
@@ -170,18 +174,20 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="lg:col-span-4 flex flex-col gap-6 overflow-x-hidden">
-          <CompactRunCalendar
-            year={year}
-            month={month}
-            years={years}
-            runsByDate={runsByDate}
-            onChangeYearMonth={changeYearMonth}
-            onSelectRunIds={(ids) => locateActivity(ids)}
-            selectedDate={selectedDate}
-          />
+        <div className="lg:col-span-4 flex flex-col gap-6 overflow-x-hidden lg:h-[600px]">
+          <div className="flex-1 min-h-0">
+            <CompactRunCalendar
+              year={year}
+              month={month}
+              years={years}
+              runsByDate={runsByDate}
+              onChangeYearMonth={changeYearMonth}
+              onSelectRunIds={(ids) => locateActivity(ids)}
+              selectedDate={selectedDate}
+            />
+          </div>
 
-          <div>
+          <div className="h-[180px] shrink-0">
             <MonthlyBarChart
               runs={filterAndSortRuns(
                 activities,

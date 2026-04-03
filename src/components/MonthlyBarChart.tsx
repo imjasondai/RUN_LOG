@@ -77,7 +77,7 @@ const MonthlyBarChart = ({
   }, [runs]);
 
   return (
-    <div className="bg-card rounded-card shadow-lg border border-gray-800/50 p-4">
+    <div className="bg-card rounded-card shadow-lg border border-gray-800/50 p-4 h-full flex flex-col">
       <div className="flex items-center justify-between mb-3">
         <div className="text-xs text-secondary font-bold uppercase tracking-[0.5px]">
           Monthly KM
@@ -85,7 +85,7 @@ const MonthlyBarChart = ({
         <div className="text-xs text-gray-400">{year}</div>
       </div>
       <div
-        className="h-16 md:h-24 flex items-end gap-2"
+        className="flex-1 min-h-0 flex items-end gap-2"
         onMouseLeave={() => setHoverState(null)}
       >
         {totals.map((v, i) => {
