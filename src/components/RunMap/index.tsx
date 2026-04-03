@@ -64,6 +64,7 @@ interface IRunMapProps {
   changeYear: (_year: string) => void;
   geoData: FeatureCollection<RPGeometry>;
   thisYear: string;
+  showActivityOverlay?: boolean;
 }
 
 const RunMap = ({
@@ -72,6 +73,7 @@ const RunMap = ({
   changeYear: _changeYear,
   geoData,
   thisYear: _thisYear,
+  showActivityOverlay = true,
 }: IRunMapProps) => {
   const { provinces } = useActivities();
   const mapRef = useRef<MapRef>();
@@ -283,7 +285,7 @@ const RunMap = ({
           style={{ opacity: 0.3 }}
         />
       </Map>
-      {isSingleActivity && run && (
+      {showActivityOverlay && isSingleActivity && run && (
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
           <div className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 rounded-lg shadow-xl px-4 py-3 w-72 relative">
             <div className="flex items-start justify-between mb-3">
