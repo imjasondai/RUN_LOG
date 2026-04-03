@@ -3,7 +3,6 @@ import maplibregl from 'maplibre-gl';
 import React, { useRef, useCallback, useState } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Map, {
-  AttributionControl,
   Layer,
   Source,
   FullscreenControl,
@@ -92,6 +91,7 @@ const RunMap = ({
     MAPBOX_TOKEN ? 'mapbox://styles/mapbox/dark-v10' : FALLBACK_STYLE
   );
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [isAttributionOpen, setIsAttributionOpen] = useState(false);
   const keepWhenLightsOff = ['runs2'];
   function switchLayerVisibility(map: MapInstance, lights: boolean) {
     const styleJson = map.getStyle();
@@ -282,8 +282,66 @@ const RunMap = ({
           position={'bottom-right'}
           style={{ opacity: 0.3 }}
         />
-        <AttributionControl compact={true} position="bottom-right" />
       </Map>
+      <div className="absolute bottom-2 right-16 z-10">
+        <div
+          className={`rounded-full border border-white/20 bg-white/90 text-black shadow-lg backdrop-blur-sm transition-all ${
+            isAttributionOpen ? 'rounded-2xl px-3 py-1.5' : 'h-6 w-6'
+          }`}
+        >
+          {isAttributionOpen ? (
+            <div className="flex items-center gap-2 text-[11px] leading-4 whitespace-nowrap">
+              <span>
+                MapLibre | OpenFreeMap | OpenMapTiles Data from OpenStreetMap
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsAttributionOpen(false)}
+                className="flex h-5 w-5 items-center justify-center rounded-full text-black/70 hover:bg-black/10 hover:text-black"
+                aria-label="Collapse map attribution"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsAttributionOpen(true)}
+              className="flex h-6 w-6 items-center justify-center rounded-full text-black/80"
+              aria-label="Expand map attribution"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+              </svg>
+            </button>
+          )}
+        </div>
+      </div>
       {showActivityOverlay && isSingleActivity && run && (
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
           <div className="bg-gray-900/70 backdrop-blur-sm border border-gray-700/50 rounded-lg shadow-xl px-4 py-3 w-72 relative">
