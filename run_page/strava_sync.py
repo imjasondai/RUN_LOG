@@ -10,9 +10,11 @@ def run_strava_sync(
     client_id,
     client_secret,
     refresh_token,
-    sync_types: list = [],
+    sync_types=None,
     only_run=False,
 ):
+    if sync_types is None:
+        sync_types = []
     generator = Generator(SQL_FILE)
     generator.set_strava_config(client_id, client_secret, refresh_token)
     # judge sync types is only running or not
@@ -20,6 +22,7 @@ def run_strava_sync(
         only_run = True
     # if you want to refresh data change False to True
     generator.only_run = only_run
+    generator.sync_types = sync_types
     generator.sync(False)
 
     activities_list = generator.load()
@@ -38,10 +41,17 @@ if __name__ == "__main__":
         action="store_true",
         help="if is only for running",
     )
+    parser.add_argument(
+        "--types",
+        nargs="+",
+        default=[],
+        help="sync only the specified Strava activity types, e.g. Run Walk Hike",
+    )
     options = parser.parse_args()
     run_strava_sync(
         options.client_id,
         options.client_secret,
         options.refresh_token,
+        sync_types=options.types,
         only_run=options.only_run,
     )

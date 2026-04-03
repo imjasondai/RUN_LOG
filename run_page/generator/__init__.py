@@ -25,6 +25,7 @@ class Generator:
         self.client_secret = ""
         self.refresh_token = ""
         self.only_run = False
+        self.sync_types = []
 
     def set_strava_config(self, client_id, client_secret, refresh_token):
         self.client_id = client_id
@@ -64,6 +65,8 @@ class Generator:
                 filters = {"before": datetime.datetime.now(datetime.timezone.utc)}
 
         for activity in self.client.get_activities(**filters):
+            if self.sync_types and activity.type not in self.sync_types:
+                continue
             if self.only_run and activity.type != "Run":
                 continue
             if IGNORE_BEFORE_SAVING:
@@ -130,6 +133,8 @@ class Generator:
     def load(self):
         # if sub_type is not in the db, just add an empty string to it
         query = self.session.query(Activity).filter(Activity.distance > 0.1)
+        if self.sync_types:
+            query = query.filter(Activity.type.in_(self.sync_types))
         if self.only_run:
             query = query.filter(Activity.type == "Run")
 
