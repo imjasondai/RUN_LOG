@@ -26,29 +26,37 @@ def backfill_locations(delay_seconds=0.3):
         .filter(Activity.summary_polyline != "")
         .all()
     )
-    print(f"Found {len(missing)} activities with missing locations")
+    print(f"Found {len(missing)} activities with missing locations", flush=True)
     updated = 0
     for idx, activity in enumerate(missing, start=1):
         try:
             points = polyline.decode(activity.summary_polyline)
             if not points:
+                print(
+                    f"[{idx}/{len(missing)}] skip run_id={activity.run_id}: no polyline points",
+                    flush=True,
+                )
                 continue
             lat, lon = points[0]
             location = reverse_geocode_location(Point(lat, lon))
             if not location:
+                print(
+                    f"[{idx}/{len(missing)}] skip run_id={activity.run_id}: no location result",
+                    flush=True,
+                )
                 continue
             activity.location_country = location
             updated += 1
-            print(f"[{idx}/{len(missing)}] backfilled run_id={activity.run_id}")
+            print(f"[{idx}/{len(missing)}] backfilled run_id={activity.run_id}", flush=True)
             time.sleep(delay_seconds)
         except Exception as exc:
-            print(f"skip run_id={activity.run_id}: {exc}")
+            print(f"skip run_id={activity.run_id}: {exc}", flush=True)
     session.commit()
     generator = Generator(SQL_FILE)
     activities_list = generator.load()
     with open(JSON_FILE, "w") as f:
         json.dump(activities_list, f)
-    print(f"Backfilled {updated} activities")
+    print(f"Backfilled {updated} activities", flush=True)
 
 
 if __name__ == "__main__":

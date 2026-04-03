@@ -126,7 +126,7 @@ jobs:
       - name: Backfill missing activity locations
         if: env.BACKFILL_MISSING_LOCATIONS == 'true'
         run: |
-          python run_page/backfill_locations.py
+          python -u run_page/backfill_locations.py
 
       - name: Run sync Codoon script
         if: env.RUN_TYPE == 'codoon'
