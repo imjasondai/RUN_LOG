@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
-import RunPolyline from '@/components/RunPolyline';
 import RunMap from '@/components/RunMap';
 import RunDetailPanel from '@/components/RunDetailPanel';
 import useActivities from '@/hooks/useActivities';
@@ -59,9 +58,6 @@ const RunDetail = () => {
             changeYear={() => {}}
             thisYear={run.start_date_local.slice(0, 4)}
           />
-        </div>
-        <div className="flex justify-center items-center mb-6">
-          <RunPolyline run={run} className="w-[220px] h-[220px]" />
         </div>
         <RunDetailPanel run={run} monthlyDistanceKm={monthlyDistanceKm} />
       </div>
