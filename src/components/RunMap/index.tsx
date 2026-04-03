@@ -283,7 +283,7 @@ const RunMap = ({
           style={{ opacity: 0.3 }}
         />
       </Map>
-      <div className="absolute bottom-28 right-2 z-10">
+      <div className="absolute bottom-[84px] right-2 z-10">
         <div
           className={`rounded-full border border-white/20 bg-white/90 text-black shadow-lg backdrop-blur-sm transition-all ${
             isAttributionOpen ? 'rounded-2xl px-3 py-1.5' : 'h-6 w-6'
@@ -320,19 +320,20 @@ const RunMap = ({
             <button
               type="button"
               onClick={() => setIsAttributionOpen(true)}
-              className="flex h-6 w-6 items-center justify-center rounded-full text-black/80"
+              className="flex h-6 w-6 items-center justify-center rounded-full text-black/80 leading-none"
               aria-label="Expand map attribution"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="14"
+                width="12"
+                height="12"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
                 strokeLinejoin="round"
+                className="block"
               >
                 <circle cx="12" cy="12" r="10" />
                 <path d="M12 16v-4" />
