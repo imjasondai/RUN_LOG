@@ -47,7 +47,10 @@ def backfill_locations(delay_seconds=0.3):
                 continue
             activity.location_country = location
             updated += 1
-            print(f"[{idx}/{len(missing)}] backfilled run_id={activity.run_id}", flush=True)
+            print(
+                f"[{idx}/{len(missing)}] backfilled run_id={activity.run_id}",
+                flush=True,
+            )
             time.sleep(delay_seconds)
         except Exception as exc:
             print(f"skip run_id={activity.run_id}: {exc}", flush=True)
