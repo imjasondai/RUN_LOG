@@ -635,6 +635,41 @@ a.mapboxgl-ctrl-logo.mapboxgl-compact {
     display: none;
   }
 }
+
+.maplibregl-ctrl-bottom-right > .maplibregl-ctrl-attrib {
+  min-height: 20px;
+  padding: 2px 24px 2px 0;
+  margin: 10px;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.92);
+  border-radius: 12px;
+}
+
+.maplibregl-ctrl-attrib .maplibregl-ctrl-attrib-inner {
+  display: none;
+}
+
+.maplibregl-ctrl-attrib-button {
+  display: block;
+  cursor: pointer;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  top: 0;
+  right: 0;
+  border: 0;
+  outline: none;
+  border-radius: 12px;
+  background-color: transparent;
+}
+
+.maplibregl-ctrl-attrib.maplibregl-compact-show {
+  padding: 2px 28px 2px 8px;
+}
+
+.maplibregl-ctrl-attrib.maplibregl-compact-show .maplibregl-ctrl-attrib-inner {
+  display: block;
+}
 .mapboxgl-scroll-zoom-blocker,
 .mapboxgl-touch-pan-blocker {
   color: #fff;
