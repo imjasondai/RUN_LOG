@@ -40,7 +40,9 @@ def build_location_text(run_activity):
     city = getattr(run_activity, "location_city", None)
     state = getattr(run_activity, "location_state", None)
     country = getattr(run_activity, "location_country", None)
-    parts = [part.strip() for part in [city, state, country] if part and str(part).strip()]
+    parts = [
+        part.strip() for part in [city, state, country] if part and str(part).strip()
+    ]
     return ", ".join(dict.fromkeys(parts))
 
 
@@ -171,7 +173,8 @@ def update_or_create_activity(session, run_activity):
                 start_point = getattr(run_activity, "start_latlng", None)
                 location_country = build_location_text(run_activity)
                 if ENABLE_REVERSE_GEOCODE and (
-                    (not location_country and start_point) or location_country == "China"
+                    (not location_country and start_point)
+                    or location_country == "China"
                 ):
                     location_country = reverse_geocode_location(start_point)
                 if location_country:

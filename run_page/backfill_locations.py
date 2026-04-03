@@ -19,7 +19,9 @@ def backfill_locations(delay_seconds=1.0):
     session = init_db(SQL_FILE)
     missing = (
         session.query(Activity)
-        .filter((Activity.location_country.is_(None)) | (Activity.location_country == ""))
+        .filter(
+            (Activity.location_country.is_(None)) | (Activity.location_country == "")
+        )
         .filter(Activity.summary_polyline.is_not(None))
         .filter(Activity.summary_polyline != "")
         .all()
