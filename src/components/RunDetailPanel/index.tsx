@@ -32,16 +32,7 @@ const RunDetailPanel = ({
         )?.zone ?? null;
   return (
     <div className="p-4 sm:max-w-[420px] mx-auto">
-      <div className="flex justify-between items-center gap-2">
-        <div className="text-base font-black text-white tracking-tight truncate">
-          {run.name}
-        </div>
-        <div className="text-xs text-secondary mt-1 whitespace-nowrap">
-          {run.start_date_local}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6 w-full text-white font-sans relative">
+      <div className="grid grid-cols-2 gap-4 sm:gap-6 w-full text-white font-sans relative">
         <div className="flex flex-col gap-2">
           <span className="text-xs sm:text-sm text-[#a0a0a0] font-normal tracking-[0.5px] uppercase flex items-center gap-1">
             <svg
