@@ -11,7 +11,7 @@ interface ISiteMetadataResult {
 
 const data: ISiteMetadataResult = {
   siteTitle: 'Jason Dai Running',
-  siteUrl: 'https://run.dvorakd.top',
+  siteUrl: 'https://run.dvorakd.com',
   logo: 'https://github.com/imjasondai.png',
   description: 'Running log powered by Strava.',
   navLinks: [
